@@ -6,7 +6,7 @@ clean:
 	@rm -rf thread_demo
 
 server-tcp: server-tcp.c
-	cc -lpthread server-tcp.c -o server-tcp
+	cc -pthread server-tcp.c -o server-tcp
 
 client-tcp: client-tcp.c
 	cc client-tcp.c -o client-tcp
