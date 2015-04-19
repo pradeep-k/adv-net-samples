@@ -28,12 +28,29 @@ import pox.openflow.libopenflow_01 as of
 from pox.lib.util import dpid_to_str
 from pox.lib.util import str_to_bool
 import time
+import pox.lib.packet as pkt
 
 log = core.getLogger()
 
 # We don't want to flood immediately when a switch connects.
 # Can be overriden on commandline.
 _flood_delay = 0
+
+def print_packet(packet):
+    log.debug("======Packet details start=======")
+    log.debug("Ethernet source port: %s", packet.src)
+    log.debug("Ethernet destination port: %s", packet.dst)
+    log.debug("Ethernet packet type: %s", pkt.ETHERNET.ethernet.getNameForType(packet.type))
+    if packet.type == packet.IP_TYPE:
+        ip = packet.payload
+    	log.debug("ip source address: %s", ip.srcip)
+    	log.debug("ip destination address: %s", ip.dstip)
+	if ip.protocol == ip.TCP_PROTOCOL:
+    	    log.debug("Transport protocol is: TCP")
+	elif ip.protocol == ip.UDP_PROTOCOL:
+    	    log.debug("Transport protocol is: UDP")
+		 
+    log.debug("======Packet details end========")
 
 class SimpleL2LearningSwitch(object):
   """
@@ -104,7 +121,7 @@ class SimpleL2LearningSwitch(object):
     self.macLearningHandle()
     outport = self.get_out_port()
     self.forward_packet([outport])
-
+    print_packet(self.packet)
   def macLearningHandle(self) :
     self.macToPort[self.packet.src] = self.event.port # 1
 
